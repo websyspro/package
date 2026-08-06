@@ -1,0 +1,30 @@
+{
+  "name": "websyspro/package",
+  "version": "1.0.4",
+  "description": "Version Management",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "MIT",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Websyspro\\DevTools\\": "src/"
+    }
+  },
+  "bin": [
+    "bin/publish"
+  ],  
+  "scripts": {
+    "git:push": "git add . && git commit -m \"Update components\" && git push origin HEAD",
+    "git:pull": "git pull origin main"
+  },
+  "authors": [
+    {
+      "name": "websyspro",
+      "email": "websyspro.services@gmail.com"
+    }
+  ],
+  "require": {
+    "websyspro/utils": "^1.0"
+  }
+}
