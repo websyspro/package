@@ -20,6 +20,7 @@ class UpdateComposer
     
     $this->terminal->eof();
     $this->terminal->bold("Package Version Manager")->eof();
+    $this->terminal->dim("Diretório: {$directory}")->eof();
     $this->terminal->eof();
     
     $this->load();
@@ -112,28 +113,29 @@ class UpdateComposer
     $version = $this->newVersion;
     $tag = "v{$version}";
     $dir = rtrim($this->directory, "/\\");
+    $packageName = $this->composerJson["name"] ?? basename($dir);
 
     $this->terminal->eof();
-    $this->terminal->bold("Release {$tag}")->eof();
+    $this->terminal->bold("Release {$packageName} {$tag}")->eof();
     $this->terminal->eof();
 
     $this->terminal->dim("→ Adicionando arquivos ao Git...")->eof();
-    $this->run("git -C \"{$dir}\" add .");
+    $this->run("git add .");
     
     $this->terminal->dim("→ Criando commit...")->eof();
-    $this->run("git -C \"{$dir}\" commit -m \"Release {$tag}\"");
+    $this->run("git commit -m \"Release {$tag}\"");
     
     $this->terminal->dim("→ Criando tag {$tag}...")->eof();
-    $this->run("git -C \"{$dir}\" tag {$tag}");
+    $this->run("git tag {$tag}");
     
     $this->terminal->dim("→ Enviando para origin...")->eof();
-    $this->run("git -C \"{$dir}\" push origin HEAD");
+    $this->run("git push origin HEAD");
     
     $this->terminal->dim("→ Enviando tag...")->eof();
-    $this->run("git -C \"{$dir}\" push origin {$tag}");
+    $this->run("git push origin {$tag}");
 
     $this->terminal->eof();
-    $this->terminal->success("Release {$tag} publicado com sucesso!");
+    $this->terminal->success("Release {$packageName} {$tag} publicado com sucesso!");
     $this->terminal->eof();
   }
 
