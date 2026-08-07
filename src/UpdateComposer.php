@@ -179,8 +179,7 @@ class UpdateComposer
       $this->run( $command[ "command" ]);
 
       $this->terminal
-        ->spinner( $key, $command[ "context" ] )
-        ->eof();
+        ->spinner( $key, $command[ "context" ] );
     }
 
     // Etapas com spinner
