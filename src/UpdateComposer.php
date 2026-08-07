@@ -2,6 +2,8 @@
 
 namespace Websyspro\Package;
 
+use function count;
+
 class UpdateComposer
 {
   private string $composerFile;
@@ -10,61 +12,84 @@ class UpdateComposer
   private string $newVersion;
 
   public function __construct(
-    public string $directoryBase
+    public string $directory
   ){
-    $this->composerFile = rtrim($directoryBase, "/\\") . "/composer.json";
+    $this->composerFile = rtrim( $directory, "/\\" ) . "/composer.json";
     $this->load();
     $this->incrementPatch();
     $this->save();
     $this->gitRelease();
   }
 
-  private function load(): void
-  {
-    if (!file_exists($this->composerFile)) {
-      echo "composer.json not found at: {$this->composerFile}" . PHP_EOL;
+  private function composerFile(
+  ): string {
+    return sprintf(
+      "%s/%s", rtrim(
+        $this->directory, "/\\"
+      ), "composer.json"
+    );
+  }
+
+  private function load(
+  ): void {
+    if (file_exists($this->composerFile()) === false) {
+      echo "composer.json not found at: {$this->composerFile()}" . PHP_EOL;
       exit(1);
     }
 
-    $content = file_get_contents($this->composerFile);
-    $this->composerJson = json_decode($content, true);
-    $this->currentVersion = $this->composerJson["version"] ?? "1.0.0";
+    $this->composerJson = json_decode(
+      file_get_contents( $this->composerFile ), true
+    );
+
+    $this->currentVersion = $this->composerJson[ "version" ] ?? "1.0.0";
   }
 
-  private function incrementPatch(): void
-  {
-    $parts = explode(".", $this->currentVersion);
+  private function incrementPatch(
+  ): void {
+    $parts = explode(
+      ".", $this->currentVersion
+    );
 
-    while (\count($parts) < 3) {
+    while(count( $parts ) < 3){
       $parts[] = "0";
     }
 
     $parts[2] = (int)$parts[2] + 1;
 
-    $this->newVersion = implode(".", $parts);
+    $this->newVersion = implode(
+      ".", $parts
+    );
+    
     $this->composerJson["version"] = $this->newVersion;
   }
 
-  private function save(): void
-  {
-    $content = json_encode($this->composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    $content = str_replace("    ", "  ", $content);
-    file_put_contents($this->composerFile, $content . PHP_EOL);
+  private function save(
+  ): void {
+    $content = json_encode(
+      $this->composerJson, 
+        JSON_PRETTY_PRINT |
+        JSON_UNESCAPED_SLASHES |
+        JSON_UNESCAPED_UNICODE
+    );
+
+    $content = str_replace( "    ", "  ", $content );
+    file_put_contents( $this->composerFile, $content . PHP_EOL );
   }
 
-  private function run(string $command): void
-  {
+  private function run(
+    string $command
+  ): void {
     echo "> {$command}" . PHP_EOL;
-    passthru($command, $exitCode);
+    passthru( $command, $exitCode );
 
-    if ($exitCode !== 0) {
+    if( $exitCode !== 0 ){
       echo "Command failed with exit code {$exitCode}" . PHP_EOL;
       exit($exitCode);
     }
   }
 
-  private function gitRelease(): void
-  {
+  private function gitRelease(
+  ): void {
     $version = $this->newVersion;
     $tag = "v{$version}";
     $dir = rtrim($this->directoryBase, "/\\");
@@ -80,8 +105,8 @@ class UpdateComposer
     echo PHP_EOL . "Released {$tag} successfully!" . PHP_EOL;
   }
 
-  public function getVersion(): string
-  {
+  public function getVersion(
+  ): string {
     return $this->newVersion;
   }
 }
