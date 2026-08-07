@@ -174,9 +174,9 @@ class UpdateComposer
         ->eof();
     }
 
-    $this->terminal->eof();
-    $this->terminal->cyan("Publish finish {$tag} ")->eof();
-    $this->terminal->eof();
+    $this->terminal
+      ->eof()
+      ->cyan("Publish finish {$tag} ");
   }
 
   public function getVersion(
