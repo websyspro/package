@@ -53,6 +53,7 @@ class UpdateComposer
     $this->currentVersion = $this->composerJson[ "version" ] ?? "1.0.0";
     
     $this->terminal->text("  Versão atual: ")->green($this->currentVersion)->eof();
+    $this->terminal->eof();
   }
 
   private function incrementPatch(
@@ -76,6 +77,7 @@ class UpdateComposer
     $this->composerJson["version"] = $this->newVersion;
     
     $this->terminal->text("  Nova versão: ")->green($this->newVersion)->eof();
+    $this->terminal->eof();
   }
 
   private function save(
