@@ -2,6 +2,8 @@
 
 namespace Websyspro\Package;
 
+use function in_array;
+
 /**
  * Class Terminal
  * 
@@ -32,7 +34,9 @@ class Terminal
    */
   public function clear(
   ): static {
-    return $this->write("\033[2J\033[H", true);
+    return $this->write(
+      "\033[2J\033[H", true
+    );
   }
 
   /**
@@ -40,7 +44,9 @@ class Terminal
    */
   public function clearLine(
   ): static {
-    return $this->write("\033[2K");
+    return $this->write(
+      "\033[2K"
+    );
   }
 
   /**
@@ -49,7 +55,9 @@ class Terminal
   public function green(
     string $text
   ): static {
-    return $this->write("\033[32m{$text}\033[0m");
+    return $this->write(
+      "\033[32m{$text}\033[0m"
+    );
   }
 
   /**
@@ -58,7 +66,9 @@ class Terminal
   public function red(
     string $text
   ): static {
-    return $this->write("\033[31m{$text}\033[0m");
+    return $this->write(
+      "\033[31m{$text}\033[0m"
+    );
   }
 
   /**
@@ -67,7 +77,9 @@ class Terminal
   public function yellow(
     string $text
   ): static {
-    return $this->write("\033[33m{$text}\033[0m");
+    return $this->write(
+      "\033[33m{$text}\033[0m"
+    );
   }
 
   /**
@@ -76,7 +88,9 @@ class Terminal
   public function blue(
     string $text
   ): static {
-    return $this->write("\033[34m{$text}\033[0m");
+    return $this->write(
+      "\033[34m{$text}\033[0m"
+    );
   }
 
   /**
@@ -85,7 +99,9 @@ class Terminal
   public function cyan(
     string $text
   ): static {
-    return $this->write("\033[36m{$text}\033[0m");
+    return $this->write(
+      "\033[36m{$text}\033[0m"
+    );
   }
 
   /**
@@ -94,7 +110,9 @@ class Terminal
   public function bold(
     string $text
   ): static {
-    return $this->write("\033[1m{$text}\033[0m");
+    return $this->write(
+      "\033[1m{$text}\033[0m"
+    );
   }
 
   /**
@@ -103,7 +121,9 @@ class Terminal
   public function dim(
     string $text
   ): static {
-    return $this->write("\033[2m{$text}\033[0m");
+    return $this->write(
+      "\033[2m{$text}\033[0m"
+    );
   }
 
   /**
@@ -113,7 +133,9 @@ class Terminal
     string $text,
     bool $flush = false
   ): static {
-    return $this->write($text, $flush);
+    return $this->write(
+      $text, $flush
+    );
   }
 
   /**
@@ -123,7 +145,9 @@ class Terminal
     string $text = "",
     bool $flush = false
   ): static {
-    return $this->write("{$text}\n", $flush);
+    return $this->write(
+      "{$text}\n", $flush
+    );
   }
 
   /**
@@ -131,7 +155,9 @@ class Terminal
    */
   public function eof(
   ): static {
-    return $this->write("\n");
+    return $this->write(
+      "\n"
+    );
   }
 
   /**
@@ -155,7 +181,9 @@ class Terminal
   public function success(
     string $text
   ): static {
-    return $this->green("✓ {$text}")->eof();
+    return $this->green(
+      "✓ {$text}"
+    )->eof();
   }
 
   /**
@@ -164,7 +192,9 @@ class Terminal
   public function error(
     string $text
   ): static {
-    return $this->red("✗ {$text}")->eof();
+    return $this->red(
+      "✗ {$text}"
+    )->eof();
   }
 
   /**
@@ -173,7 +203,9 @@ class Terminal
   public function warning(
     string $text
   ): static {
-    return $this->yellow("⚠ {$text}")->eof();
+    return $this->yellow(
+      "⚠ {$text}"
+    )->eof();
   }
 
   /**
@@ -182,7 +214,9 @@ class Terminal
   public function info(
     string $text
   ): static {
-    return $this->cyan("ℹ {$text}")->eof();
+    return $this->cyan(
+      "ℹ {$text}"
+    )->eof();
   }
 
   /**
