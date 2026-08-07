@@ -159,7 +159,9 @@ class UpdateComposer
     
     $this->terminal
       ->eof() // Quebra linha no final
-      ->cursorShow(); // Mostra cursor novamente
+      ->cursorShow() // Mostra cursor novamente
+      ->text("\r")
+      ->text("\r");
 
     $this->terminal
       ->eof()
