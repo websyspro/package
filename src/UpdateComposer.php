@@ -39,7 +39,7 @@ class UpdateComposer
 
   private function load(
   ): void {
-    $this->terminal->dim("→ Carregando composer.json...")->eof();
+    $this->terminal->cyan("→ Carregando composer.json...")->eof();
     
     if (file_exists($this->composerFile()) === false) {
       $this->terminal->error("composer.json não encontrado em: {$this->composerFile()}");
@@ -52,12 +52,12 @@ class UpdateComposer
 
     $this->currentVersion = $this->composerJson[ "version" ] ?? "1.0.0";
     
-    $this->terminal->cyan("  Versão atual: {$this->currentVersion}")->eof();
+    $this->terminal->text("  Versão atual: ")->green($this->currentVersion)->eof();
   }
 
   private function incrementPatch(
   ): void {
-    $this->terminal->dim("→ Incrementando versão...")->eof();
+    $this->terminal->cyan("→ Incrementando versão...")->eof();
     
     $parts = explode(
       ".", $this->currentVersion
@@ -75,12 +75,12 @@ class UpdateComposer
     
     $this->composerJson["version"] = $this->newVersion;
     
-    $this->terminal->green("  Nova versão: {$this->newVersion}")->eof();
+    $this->terminal->text("  Nova versão: ")->green($this->newVersion)->eof();
   }
 
   private function save(
   ): void {
-    $this->terminal->dim("→ Salvando composer.json...")->eof();
+    $this->terminal->cyan("→ Salvando composer.json...")->eof();
     
     $content = json_encode(
       $this->composerJson, 
@@ -92,7 +92,7 @@ class UpdateComposer
     $content = str_replace( "    ", "  ", $content );
     file_put_contents( $this->composerFile, $content . PHP_EOL );
     
-    $this->terminal->success("Arquivo salvo");
+    $this->terminal->success("Arquivo salvo")->eof();
   }
 
   private function run(
