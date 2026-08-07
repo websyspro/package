@@ -10,11 +10,20 @@ class UpdateComposer
   private array $composerJson;
   private string $currentVersion;
   private string $newVersion;
+  private Terminal $terminal;
 
   public function __construct(
     public string $directory
   ){
+    $this->terminal = Terminal::init();
     $this->composerFile = rtrim( $directory, "/\\" ) . "/composer.json";
+    
+    $this->terminal->eof();
+    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->bold("    Package Version Manager")->eof();
+    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->eof();
+    
     $this->load();
     $this->incrementPatch();
     $this->save();
@@ -32,8 +41,10 @@ class UpdateComposer
 
   private function load(
   ): void {
+    $this->terminal->dim("→ Carregando composer.json...")->eof();
+    
     if (file_exists($this->composerFile()) === false) {
-      echo "composer.json not found at: {$this->composerFile()}" . PHP_EOL;
+      $this->terminal->error("composer.json não encontrado em: {$this->composerFile()}");
       exit(1);
     }
 
@@ -42,10 +53,14 @@ class UpdateComposer
     );
 
     $this->currentVersion = $this->composerJson[ "version" ] ?? "1.0.0";
+    
+    $this->terminal->cyan("  Versão atual: {$this->currentVersion}")->eof();
   }
 
   private function incrementPatch(
   ): void {
+    $this->terminal->dim("→ Incrementando versão...")->eof();
+    
     $parts = explode(
       ".", $this->currentVersion
     );
@@ -61,10 +76,14 @@ class UpdateComposer
     );
     
     $this->composerJson["version"] = $this->newVersion;
+    
+    $this->terminal->green("  Nova versão: {$this->newVersion}")->eof();
   }
 
   private function save(
   ): void {
+    $this->terminal->dim("→ Salvando composer.json...")->eof();
+    
     $content = json_encode(
       $this->composerJson, 
         JSON_PRETTY_PRINT |
@@ -74,16 +93,18 @@ class UpdateComposer
 
     $content = str_replace( "    ", "  ", $content );
     file_put_contents( $this->composerFile, $content . PHP_EOL );
+    
+    $this->terminal->success("Arquivo salvo");
   }
 
   private function run(
     string $command
   ): void {
-    echo "> {$command}" . PHP_EOL;
+    $this->terminal->dim("  $ {$command}")->eof();
     passthru( $command, $exitCode );
 
     if( $exitCode !== 0 ){
-      echo "Command failed with exit code {$exitCode}" . PHP_EOL;
+      $this->terminal->error("Comando falhou com código {$exitCode}");
       exit($exitCode);
     }
   }
@@ -94,15 +115,39 @@ class UpdateComposer
     $tag = "v{$version}";
     $dir = rtrim($this->directory, "/\\");
 
-    echo PHP_EOL . "Releasing {$tag}..." . PHP_EOL . PHP_EOL;
+    $this->terminal->eof();
+    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->yellow("  Release {$tag}")->eof();
+    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->eof();
 
+    // Confirma o release
+    if (!$this->terminal->confirm("Deseja fazer o release {$tag}?")) {
+      $this->terminal->warning("Release cancelado pelo usuário");
+      exit(0);
+    }
+
+    $this->terminal->eof();
+    $this->terminal->dim("→ Adicionando arquivos ao Git...")->eof();
     $this->run("git -C \"{$dir}\" add .");
+    
+    $this->terminal->dim("→ Criando commit...")->eof();
     $this->run("git -C \"{$dir}\" commit -m \"Release {$tag}\"");
+    
+    $this->terminal->dim("→ Criando tag {$tag}...")->eof();
     $this->run("git -C \"{$dir}\" tag {$tag}");
+    
+    $this->terminal->dim("→ Enviando para origin...")->eof();
     $this->run("git -C \"{$dir}\" push origin HEAD");
+    
+    $this->terminal->dim("→ Enviando tag...")->eof();
     $this->run("git -C \"{$dir}\" push origin {$tag}");
 
-    echo PHP_EOL . "Released {$tag} successfully!" . PHP_EOL;
+    $this->terminal->eof();
+    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->success("Release {$tag} publicado com sucesso!");
+    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->eof();
   }
 
   public function getVersion(
