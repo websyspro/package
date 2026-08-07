@@ -176,6 +176,8 @@ class UpdateComposer
 
     foreach( $commands as $command ){
       $this->run( $command[ "command" ]);
+
+      $this->terminal->green( $command[ "context" ] );
     }
 
     // Etapas com spinner
