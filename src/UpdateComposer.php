@@ -88,24 +88,6 @@ class UpdateComposer
     // $this->terminal->success("Arquivo salvo");
   }
 
-  private function runWithSpinner(
-    string $command,
-    string $message,
-    bool $silent = true
-  ): void {
-    // Mostra spinner animado
-    for ($i = 0; $i < 4; $i++) {
-      $this->terminal->spinner($i, $message);
-      usleep(100000); // 0.1 segundo
-    }
-    
-    // Executa comando
-    $this->run($command, $silent);
-    
-    // Substitui spinner por sucesso
-    $this->terminal->clearLine()->success($message)->eof();
-  }
-
   private function run(
     string $command,
     bool $silent = true
@@ -146,7 +128,7 @@ class UpdateComposer
     $commands = [
       [ 
         "command" => "git add .",
-        "context" => "createds file(s)"
+        "context" => "add files"
       ],
       [
         "command" => "git commit -m \"Release {$this->newVersion}\"",
