@@ -19,9 +19,7 @@ class UpdateComposer
     $this->composerFile = rtrim( $directory, "/\\" ) . "/composer.json";
     
     $this->terminal->eof();
-    $this->terminal->bold("═══════════════════════════════════════")->eof();
-    $this->terminal->bold("    Package Version Manager")->eof();
-    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->bold("Package Version Manager")->eof();
     $this->terminal->eof();
     
     $this->load();
@@ -116,9 +114,7 @@ class UpdateComposer
     $dir = rtrim($this->directory, "/\\");
 
     $this->terminal->eof();
-    $this->terminal->bold("═══════════════════════════════════════")->eof();
-    $this->terminal->yellow("  Release {$tag}")->eof();
-    $this->terminal->bold("═══════════════════════════════════════")->eof();
+    $this->terminal->bold("Release {$tag}")->eof();
     $this->terminal->eof();
 
     // Confirma o release
@@ -144,9 +140,7 @@ class UpdateComposer
     $this->run("git -C \"{$dir}\" push origin {$tag}");
 
     $this->terminal->eof();
-    $this->terminal->bold("═══════════════════════════════════════")->eof();
     $this->terminal->success("Release {$tag} publicado com sucesso!");
-    $this->terminal->bold("═══════════════════════════════════════")->eof();
     $this->terminal->eof();
   }
 
