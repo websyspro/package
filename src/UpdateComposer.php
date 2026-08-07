@@ -122,7 +122,8 @@ class UpdateComposer
       ->cyan("{$packageName} ")
       ->bold( "publish v{$this->newVersion}")
       ->eof()
-      ->eof();
+      ->eof()
+      ->cursorHide(); // Esconde cursor
 
     /* define commands */
     $commands = [
@@ -156,7 +157,9 @@ class UpdateComposer
         ->green( $command[ "context" ]);
     }
     
-    $this->terminal->eof(); // Quebra linha no final
+    $this->terminal
+      ->eof() // Quebra linha no final
+      ->cursorShow(); // Mostra cursor novamente
 
     $this->terminal
       ->eof()

@@ -50,6 +50,26 @@ class Terminal
   }
 
   /**
+   * Oculta o cursor do terminal
+   */
+  public function cursorHide(
+  ): static {
+    return $this->write(
+      "\033[?25l"
+    );
+  }
+
+  /**
+   * Torna o cursor visível novamente
+   */
+  public function cursorShow(
+  ): static {
+    return $this->write(
+      "\033[?25h"
+    );
+  }
+
+  /**
    * Aplica cor verde ao texto
    */
   public function green(
