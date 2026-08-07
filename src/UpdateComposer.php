@@ -182,7 +182,7 @@ class UpdateComposer
     // $this->runWithSpinner("git push origin {$tag}", "Enviando tag");
 
     $this->terminal->eof();
-    $this->terminal->bgGreen(" Publish finish {$tag} ")->eof();
+    $this->terminal->cyan(" Publish finish {$tag} ")->eof();
     $this->terminal->eof();
   }
 
