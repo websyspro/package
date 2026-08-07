@@ -148,6 +148,7 @@ class UpdateComposer
       ->eof()
       ->cyan("{$packageName} ")
       ->bold( "publish v{$this->newVersion}")
+      ->eof()
       ->eof();
 
     /* define commands */
