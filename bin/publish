@@ -1,11 +1,16 @@
 #!/usr/bin/env php
 <?php
 
-defined( "DIR_BASE" ) || define( 
-  "DIR_BASE", __DIR__ . "/../../../../"
+/*
+ * Update Version Composer
+ */
+
+defined("DIR_BASE") || define(
+  "DIR_BASE", realpath( 
+    __DIR__ . "/../../../../"
+  ) . DIRECTORY_SEPARATOR
 );
 
 require DIR_BASE . "vendor/autoload.php";
-
-use Websyspro\Package\UpdateCompose;
-new UpdateCompose( DIR_BASE );
+use Websyspro\Package\UpdateComposer;
+new UpdateComposer( DIR_BASE );

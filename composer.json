@@ -1,6 +1,6 @@
 {
     "name": "websyspro/package",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "description": "Version Management",
     "minimum-stability": "dev",
     "prefer-stable": true,
