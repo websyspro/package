@@ -120,7 +120,6 @@ class UpdateComposer
     bool $silent = true
   ): void {
     if ($silent) {
-      // Redireciona stdout e stderr para null
       if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         $command .= " >nul 2>&1";
       } else {
@@ -138,21 +137,53 @@ class UpdateComposer
   }
 
   private function gitRelease(
+    array $commands = []
   ): void {
     $version = $this->newVersion;
     $tag = "v{$version}";
     $packageName = $this->composerJson["name"] ?? "package";
 
-    $this->terminal->eof();
-    $this->terminal->cyan("{$packageName} ")->bold("Publish")->eof();
-    $this->terminal->eof();
+    /* define header */
+    $this->terminal
+      ->eof()
+      ->cyan("{$packageName} ")
+      ->bold( "publish v{$this->newVersion}")
+      ->eof();
+
+    /* define commands */
+    $commands = [
+      [ 
+        "command" => "git add .",
+        "context" => "createds file(s)"
+      ],
+      [
+        "command" => "git commit -m \"Release {$this->newVersion}\"",
+        "context" => "createds file(s)"
+      ],
+      [ 
+        "command" => "git tag {$this->newVersion}",
+        "context" => "createds file(s)"
+      ],
+      [
+        "command" => "git push origin HEAD",
+        "context" => "createds file(s)"
+      ],
+      [ 
+        "command" => "git push origin {$this->newVersion}",
+        "context" => "createds file(s)" 
+      ]
+    ];
+
+    foreach( $commands as $command ){
+      $this->run( $command[ "command" ]);
+    }
 
     // Etapas com spinner
-    $this->runWithSpinner("git add .", "Adicionando arquivos");
-    $this->runWithSpinner("git commit -m \"Release {$tag}\"", "Criando commit");
-    $this->runWithSpinner("git tag {$tag}", "Criando tag {$tag}");
-    $this->runWithSpinner("git push origin HEAD", "Enviando para origin");
-    $this->runWithSpinner("git push origin {$tag}", "Enviando tag");
+    // $this->runWithSpinner("git add .", "Adicionando arquivos");
+    // $this->runWithSpinner("git commit -m \"Release {$tag}\"", "Criando commit");
+    // $this->runWithSpinner("git tag {$tag}", "Criando tag {$tag}");
+    // $this->runWithSpinner("git push origin HEAD", "Enviando para origin");
+    // $this->runWithSpinner("git push origin {$tag}", "Enviando tag");
 
     $this->terminal->eof();
     $this->terminal->bgGreen(" Publish finish {$tag} ")->eof();
