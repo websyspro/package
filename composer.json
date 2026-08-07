@@ -8,7 +8,7 @@
   "type": "library",
   "autoload": {
     "psr-4": {
-      "Websyspro\\DevTools\\": "src/"
+      "Websyspro\\Package\\": "src/"
     }
   },
   "bin": [
