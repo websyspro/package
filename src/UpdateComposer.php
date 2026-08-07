@@ -20,7 +20,6 @@ class UpdateComposer
     
     $this->terminal->eof();
     $this->terminal->bold("Package Version Manager")->eof();
-    $this->terminal->dim("Diretório: {$directory}")->eof();
     $this->terminal->eof();
     
     $this->load();
