@@ -105,6 +105,15 @@ class Terminal
   }
 
   /**
+   * Aplica cor de fundo verde ao texto
+   */
+  public function bgGreen(
+    string $text
+  ): static {
+    return $this->write("\033[42m{$text}\033[0m");
+  }
+
+  /**
    * Aplica formatação em negrito
    */
   public function bold(
@@ -236,6 +245,32 @@ class Terminal
     }
     
     return in_array($response, ["s", "sim", "y", "yes"]);
+  }
+
+  /**
+   * Exibe uma barra de progresso com informações detalhadas
+   */
+  public function progressBarDetailed(
+    int $current,
+    int $total,
+    int $width = 40,
+    string $prefix = "Progress"
+  ): static {
+    $percentage = ($current / $total) * 100;
+    $filled = (int)(($current / $total) * $width);
+    $empty = $width - $filled;
+    
+    $bar = str_repeat("█", $filled) . str_repeat("░", $empty);
+    $output = sprintf(
+      "\r%s: [%s] %d/%d (%d%%)",
+      $prefix,
+      $bar,
+      $current,
+      $total,
+      (int)$percentage
+    );
+    
+    return $this->write($output, true);
   }
 
   /**

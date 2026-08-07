@@ -96,13 +96,23 @@ class UpdateComposer
   }
 
   private function run(
-    string $command
+    string $command,
+    bool $silent = true
   ): void {
-    $this->terminal->dim("  $ {$command}")->eof();
-    passthru( $command, $exitCode );
+    if ($silent) {
+      // Redireciona stdout e stderr para null
+      if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        $command .= " >nul 2>&1";
+      } else {
+        $command .= " >/dev/null 2>&1";
+      }
+    }
+    
+    exec($command, $output, $exitCode);
 
-    if( $exitCode !== 0 ){
+    if ($exitCode !== 0) {
       $this->terminal->error("Comando falhou com código {$exitCode}");
+      $this->terminal->dim("  $ {$command}")->eof();
       exit($exitCode);
     }
   }
@@ -111,30 +121,49 @@ class UpdateComposer
   ): void {
     $version = $this->newVersion;
     $tag = "v{$version}";
-    $dir = rtrim($this->directory, "/\\");
-    $packageName = $this->composerJson["name"] ?? basename($dir);
+    $packageName = $this->composerJson["name"] ?? "package";
 
     $this->terminal->eof();
-    $this->terminal->bold("Release {$packageName} {$tag}")->eof();
+    $this->terminal->cyan("{$packageName} ")->bold("Publish")->eof();
     $this->terminal->eof();
 
-    $this->terminal->dim("→ Adicionando arquivos ao Git...")->eof();
+    $steps = [
+      "Adicionando arquivos",
+      "Criando commit",
+      "Criando tag",
+      "Enviando para origin",
+      "Enviando tag"
+    ];
+    
+    $total = count($steps);
+    
+    // Etapa 1
+    $this->terminal->progressBarDetailed(1, $total, 40, $steps[0]);
     $this->run("git add .");
+    $this->terminal->eof();
     
-    $this->terminal->dim("→ Criando commit...")->eof();
+    // Etapa 2
+    $this->terminal->progressBarDetailed(2, $total, 40, $steps[1]);
     $this->run("git commit -m \"Release {$tag}\"");
+    $this->terminal->eof();
     
-    $this->terminal->dim("→ Criando tag {$tag}...")->eof();
+    // Etapa 3
+    $this->terminal->progressBarDetailed(3, $total, 40, $steps[2]);
     $this->run("git tag {$tag}");
+    $this->terminal->eof();
     
-    $this->terminal->dim("→ Enviando para origin...")->eof();
+    // Etapa 4
+    $this->terminal->progressBarDetailed(4, $total, 40, $steps[3]);
     $this->run("git push origin HEAD");
+    $this->terminal->eof();
     
-    $this->terminal->dim("→ Enviando tag...")->eof();
+    // Etapa 5
+    $this->terminal->progressBarDetailed(5, $total, 40, $steps[4]);
     $this->run("git push origin {$tag}");
+    $this->terminal->eof();
 
     $this->terminal->eof();
-    $this->terminal->success("Release {$packageName} {$tag} publicado com sucesso!");
+    $this->terminal->bgGreen(" Publish finish {$tag} ")->eof();
     $this->terminal->eof();
   }
 
