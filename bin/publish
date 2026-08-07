@@ -1,6 +1,24 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__ . "/../../../vendor/autoload.php";
+// Instalado via Composer: vendor/websyspro/package/bin/
+$asPackage = __DIR__ . "/../../../../vendor/autoload.php";
 
-echo "Work!";
+// Desenvolvimento local: package/bin/
+$asLocal = __DIR__ . "/../vendor/autoload.php";
+
+if (file_exists($asPackage)) {
+  define("DIR_BASE", realpath(__DIR__ . "/../../../../") . "/");
+  require $asPackage;
+} elseif (file_exists($asLocal)) {
+  define("DIR_BASE", realpath(__DIR__ . "/..") . "/");
+  $loader = require $asLocal;
+  // registra o namespace local pois o pacote não se autocarrega
+  $loader->addPsr4("Websyspro\\Package\\", __DIR__ . "/../src/");
+} else {
+  echo "autoload.php not found." . PHP_EOL;
+  exit(1);
+}
+
+use Websyspro\Package\UpdateComposer;
+new UpdateComposer( DIR_BASE );
