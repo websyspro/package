@@ -80,7 +80,7 @@ class UpdateComposer
 
   private function save(
   ): void {
-    $this->terminal->cyan("→ Salvando composer.json...")->eof();
+    $this->terminal->dim("→ Salvando composer.json...")->eof();
     
     $content = json_encode(
       $this->composerJson, 
@@ -92,7 +92,7 @@ class UpdateComposer
     $content = str_replace( "    ", "  ", $content );
     file_put_contents( $this->composerFile, $content . PHP_EOL );
     
-    $this->terminal->success("Arquivo salvo")->eof();
+    $this->terminal->success("Arquivo salvo");
   }
 
   private function run(
@@ -127,40 +127,30 @@ class UpdateComposer
     $this->terminal->cyan("{$packageName} ")->bold("Publish")->eof();
     $this->terminal->eof();
 
-    $steps = [
-      "Adicionando arquivos",
-      "Criando commit",
-      "Criando tag",
-      "Enviando para origin",
-      "Enviando tag"
-    ];
-    
-    $total = count($steps);
-    
-    // Etapa 1
-    $this->terminal->progressBarDetailed(1, $total, 40, $steps[0]);
+    // Etapa 1: Adicionando arquivos
+    $this->terminal->spinner(0, "Adicionando arquivos");
     $this->run("git add .");
-    $this->terminal->eof();
+    $this->terminal->clearLine()->success("Adicionando arquivos")->eof();
     
-    // Etapa 2
-    $this->terminal->progressBarDetailed(2, $total, 40, $steps[1]);
+    // Etapa 2: Criando commit
+    $this->terminal->spinner(1, "Criando commit");
     $this->run("git commit -m \"Release {$tag}\"");
-    $this->terminal->eof();
+    $this->terminal->clearLine()->success("Criando commit")->eof();
     
-    // Etapa 3
-    $this->terminal->progressBarDetailed(3, $total, 40, $steps[2]);
+    // Etapa 3: Criando tag
+    $this->terminal->spinner(2, "Criando tag {$tag}");
     $this->run("git tag {$tag}");
-    $this->terminal->eof();
+    $this->terminal->clearLine()->success("Criando tag {$tag}")->eof();
     
-    // Etapa 4
-    $this->terminal->progressBarDetailed(4, $total, 40, $steps[3]);
+    // Etapa 4: Enviando para origin
+    $this->terminal->spinner(3, "Enviando para origin");
     $this->run("git push origin HEAD");
-    $this->terminal->eof();
+    $this->terminal->clearLine()->success("Enviando para origin")->eof();
     
-    // Etapa 5
-    $this->terminal->progressBarDetailed(5, $total, 40, $steps[4]);
+    // Etapa 5: Enviando tag
+    $this->terminal->spinner(0, "Enviando tag");
     $this->run("git push origin {$tag}");
-    $this->terminal->eof();
+    $this->terminal->clearLine()->success("Enviando tag")->eof();
 
     $this->terminal->eof();
     $this->terminal->bgGreen(" Publish finish {$tag} ")->eof();
