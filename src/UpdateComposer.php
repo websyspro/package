@@ -152,9 +152,12 @@ class UpdateComposer
       $this->run( $command[ "command" ]);
 
       $this->terminal
+        ->text("\r")
         ->green( $command[ "context" ] )
-        ->eof();
+        ->text("          "); // Limpa resto da linha
     }
+    
+    $this->terminal->eof(); // Quebra linha no final
 
     $this->terminal
       ->eof()
