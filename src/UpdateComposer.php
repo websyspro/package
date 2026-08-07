@@ -18,9 +18,10 @@ class UpdateComposer
     $this->terminal = Terminal::init();
     $this->composerFile = rtrim( $directory, "/\\" ) . "/composer.json";
     
-    $this->terminal->eof();
-    $this->terminal->bold("Package Version Manager")->eof();
-    $this->terminal->eof();
+    $this->terminal
+      ->eof()
+      ->bold("Package Version Manager")
+      ->eof();
     
     $this->load();
     $this->incrementPatch();
