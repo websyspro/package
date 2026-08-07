@@ -1,5 +1,5 @@
 @echo off
-SET VERSION=1.0.5
+SET VERSION=1.0.7
 
 git add .
 git commit -m "Release v%VERSION%"
