@@ -92,7 +92,7 @@ class UpdateComposer
   ): void {
     $version = $this->newVersion;
     $tag = "v{$version}";
-    $dir = rtrim($this->directoryBase, "/\\");
+    $dir = rtrim($this->directory, "/\\");
 
     echo PHP_EOL . "Releasing {$tag}..." . PHP_EOL . PHP_EOL;
 
