@@ -1,6 +1,6 @@
 {
     "name": "websyspro/package",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "Version Management",
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -15,8 +15,7 @@
         "bin/publish"
     ],
     "scripts": {
-        "git:push": "git add . && git commit -m \"Update components\" && git push origin HEAD",
-        "git:pull": "git pull origin main"
+        "publish": "php index.php"
     },
     "authors": [
         {
@@ -24,7 +23,5 @@
             "email": "websyspro.services@gmail.com"
         }
     ],
-    "require": {
-        "websyspro/utils": "^1.0"
-    }
+    "require": []
 }
