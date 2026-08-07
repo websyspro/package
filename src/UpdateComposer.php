@@ -35,7 +35,7 @@ class UpdateComposer
   {
     $parts = explode(".", $this->currentVersion);
 
-    while (count($parts) < 3) {
+    while (\count($parts) < 3) {
       $parts[] = "0";
     }
 
@@ -66,14 +66,15 @@ class UpdateComposer
   {
     $version = $this->newVersion;
     $tag = "v{$version}";
+    $dir = rtrim($this->directoryBase, "/\\");
 
     echo PHP_EOL . "Releasing {$tag}..." . PHP_EOL . PHP_EOL;
 
-    $this->run("git -C \"{$this->directoryBase}\" add .");
-    $this->run("git -C \"{$this->directoryBase}\" commit -m \"Release {$tag}\"");
-    $this->run("git -C \"{$this->directoryBase}\" tag {$tag}");
-    $this->run("git -C \"{$this->directoryBase}\" push origin HEAD");
-    $this->run("git -C \"{$this->directoryBase}\" push origin {$tag}");
+    $this->run("git -C \"{$dir}\" add .");
+    $this->run("git -C \"{$dir}\" commit -m \"Release {$tag}\"");
+    $this->run("git -C \"{$dir}\" tag {$tag}");
+    $this->run("git -C \"{$dir}\" push origin HEAD");
+    $this->run("git -C \"{$dir}\" push origin {$tag}");
 
     echo PHP_EOL . "Released {$tag} successfully!" . PHP_EOL;
   }
