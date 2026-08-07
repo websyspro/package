@@ -179,7 +179,7 @@ class UpdateComposer
       $this->run( $command[ "command" ]);
 
       $this->terminal
-        ->green( $command[ "context" ] )
+        ->spinner( 0, $command[ "context" ] )
         ->eof();
     }
 
