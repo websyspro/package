@@ -175,11 +175,11 @@ class UpdateComposer
       ]
     ];
 
-    foreach( $commands as $command ){
+    foreach( $commands as $key => $command ){
       $this->run( $command[ "command" ]);
 
       $this->terminal
-        ->spinner( 0, $command[ "context" ] )
+        ->spinner( $key, $command[ "context" ] )
         ->eof();
     }
 
