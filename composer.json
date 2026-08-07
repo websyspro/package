@@ -1,26 +1,26 @@
 {
-    "name": "websyspro/package",
-    "version": "1.0.13",
-    "description": "Version Management",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "license": "MIT",
-    "type": "library",
-    "autoload": {
-        "psr-4": {
-            "Websyspro\\Package\\": "src/"
-        }
-    },
-    "bin": [
-        "bin/publish"
-    ],
-    "scripts": {
-        "publish": "php index.php"
-    },
-    "authors": [
-        {
-            "name": "websyspro",
-            "email": "websyspro.services@gmail.com"
-        }
-    ]
+  "name": "websyspro/package",
+  "version": "1.0.14",
+  "description": "Version Management",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "MIT",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Websyspro\\Package\\": "src/"
+    }
+  },
+  "bin": [
+    "bin/publish"
+  ],
+  "scripts": {
+    "publish": "php index.php"
+  },
+  "authors": [
+    {
+      "name": "websyspro",
+      "email": "websyspro.services@gmail.com"
+    }
+  ]
 }

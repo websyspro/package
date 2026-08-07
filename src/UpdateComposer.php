@@ -48,6 +48,7 @@ class UpdateComposer
   private function save(): void
   {
     $content = json_encode($this->composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    $content = str_replace("    ", "  ", $content);
     file_put_contents($this->composerFile, $content . PHP_EOL);
   }
 
