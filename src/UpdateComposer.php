@@ -176,7 +176,8 @@ class UpdateComposer
 
     $this->terminal
       ->eof()
-      ->cyan("Publish finish {$tag} ");
+      ->cyan("Publish finish {$tag} ")
+      ->eof();
   }
 
   public function getVersion(
