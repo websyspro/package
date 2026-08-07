@@ -117,13 +117,6 @@ class UpdateComposer
     $this->terminal->bold("Release {$tag}")->eof();
     $this->terminal->eof();
 
-    // Confirma o release
-    if (!$this->terminal->confirm("Deseja fazer o release {$tag}?")) {
-      $this->terminal->warning("Release cancelado pelo usuário");
-      exit(0);
-    }
-
-    $this->terminal->eof();
     $this->terminal->dim("→ Adicionando arquivos ao Git...")->eof();
     $this->run("git -C \"{$dir}\" add .");
     
