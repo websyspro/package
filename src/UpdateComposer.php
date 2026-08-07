@@ -174,15 +174,8 @@ class UpdateComposer
         ->eof();
     }
 
-    // Etapas com spinner
-    // $this->runWithSpinner("git add .", "Adicionando arquivos");
-    // $this->runWithSpinner("git commit -m \"Release {$tag}\"", "Criando commit");
-    // $this->runWithSpinner("git tag {$tag}", "Criando tag {$tag}");
-    // $this->runWithSpinner("git push origin HEAD", "Enviando para origin");
-    // $this->runWithSpinner("git push origin {$tag}", "Enviando tag");
-
     $this->terminal->eof();
-    $this->terminal->cyan(" Publish finish {$tag} ")->eof();
+    $this->terminal->cyan("Publish finish {$tag} ")->eof();
     $this->terminal->eof();
   }
 
