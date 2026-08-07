@@ -158,19 +158,19 @@ class UpdateComposer
       ],
       [
         "command" => "git commit -m \"Release {$this->newVersion}\"",
-        "context" => "createds file(s)"
+        "context" => "create commit"
       ],
       [ 
         "command" => "git tag {$this->newVersion}",
-        "context" => "createds file(s)"
+        "context" => "create tag"
       ],
       [
         "command" => "git push origin HEAD",
-        "context" => "createds file(s)"
+        "context" => "send to origin"
       ],
       [ 
         "command" => "git push origin {$this->newVersion}",
-        "context" => "createds file(s)" 
+        "context" => "send to origin tag" 
       ]
     ];
 
