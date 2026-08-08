@@ -97,17 +97,29 @@ class UpdateComposer
   ): void {
     $package = $this->package();
 
-
     $this->write( "\n\033[1mPackage Version Manager\033[0m\n" );
     $this->write( "\n\033[36m{$package->name()}\033[0m\033[1m{$package->version()}\033[0m\n\n\033[?25l" );
 
-    /* define commands */
     foreach([
-      new CMDStructure( "git add .", "add files" ),
-      new CMDStructure( "git commit -m \"Release {$package->version()}\"", "create commit" ),
-      new CMDStructure( "git tag {$package->version()}", "create tag" ),
-      new CMDStructure( "git push origin HEAD", "send to origin" ),
-      new CMDStructure( "git push origin {$package->version()}", "send to origin tag" )
+      new CMDStructure( 
+        "git add .", "add files"
+      ),
+      new CMDStructure( 
+        "git commit -m \"Release {$package->version()}\"",
+        "create commit"
+      ),
+      new CMDStructure(
+        "git tag {$package->version()}",
+        "create tag"
+      ),
+      new CMDStructure(
+        "git push origin HEAD",
+        "send to origin"
+      ),
+      new CMDStructure(
+        "git push origin {$package->version()}",
+        "send to origin tag"
+      )
     ] as $cmdStructure ){
       $this->shellExec( $cmdStructure );
     }
