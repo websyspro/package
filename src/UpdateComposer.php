@@ -18,11 +18,6 @@ class UpdateComposer
     $this->composerLoader();
     $this->composerSaveVersion();
     $this->composerSendVersion();
-
-
-
-    // $this->save();
-    // $this->gitRelease();
   }
 
   private function write(
@@ -31,7 +26,7 @@ class UpdateComposer
     fwrite( STDOUT, $data );
   }
 
-  private function extractVersion(
+  private function package(
   ): PackageStructure {
     return new PackageStructure(
       ...[
@@ -70,7 +65,7 @@ class UpdateComposer
   ): void {
     $this->composerStructure[
       ConstsComposer::version
-    ] = $this->extractVersion()->inc();
+    ] = $this->package()->versionInc();
 
     $content = json_encode( 
       $this->composerStructure, 
@@ -100,32 +95,23 @@ class UpdateComposer
 
   private function composerSendVersion(
   ): void {
-    $extractVersion = $this->extractVersion();
-
-
-    $packageName = $this->composerJson["name"] 
-      ?? "package";
+    $package = $this->package();
 
 
     $this->write( "\n\033[1mPackage Version Manager\033[0m\n" );
-    $this->write( "\n\033[36m{$packageName}\033[0m\033[1m{$extractVersion->get()}\033[0m\n\n\033[?25l" );
+    $this->write( "\n\033[36m{$package->name()}\033[0m\033[1m{$package->version()}\033[0m\n\n\033[?25l" );
 
     /* define commands */
     foreach([
       new CMDStructure( "git add .", "add files" ),
-      new CMDStructure( "git commit -m \"Release {$this->newVersion}\"", "create commit" ),
-      new CMDStructure( "git tag {$this->newVersion}", "create tag" ),
+      new CMDStructure( "git commit -m \"Release {$package->version()}\"", "create commit" ),
+      new CMDStructure( "git tag {$package->version()}", "create tag" ),
       new CMDStructure( "git push origin HEAD", "send to origin" ),
-      new CMDStructure( "git push origin {$this->newVersion}", "send to origin tag" )
+      new CMDStructure( "git push origin {$package->version()}", "send to origin tag" )
     ] as $cmdStructure ){
       $this->shellExec( $cmdStructure );
     }
 
-    $this->write( "\n\033[?25h\033[36mPublish finish {$this->newVersion}\033[0m\n" );
-  }
-
-  public function getVersion(
-  ): string {
-    return $this->newVersion;
+    $this->write( "\n\033[?25h\033[36mPublish finish {$package->version()}\033[0m\n" );
   }
 }

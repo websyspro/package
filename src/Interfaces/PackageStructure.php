@@ -14,7 +14,17 @@ class PackageStructure
     public readonly int $patch = 0
   ){}
 
-  public function get(
+  public function name(
+  ): string {
+    return $this->name;
+  }
+
+  public function description(
+  ): string {
+    return $this->description;
+  }  
+
+  public function version(
   ): string {
     return implode(
       ConstsComposer::versionSeparator, [
@@ -23,7 +33,7 @@ class PackageStructure
     );
   }  
 
-  public function inc(
+  public function versionInc(
   ): string {
     return implode(
       ConstsComposer::versionSeparator, [
