@@ -89,7 +89,7 @@ class UpdateComposer
     if( $result_code !== 0 ){
       exit( $result_code );
     } else {
-      $this->write( "\rGIT / \033[32m{$cmd->hits}\033[0m" );
+      $this->write( "\r\033[K GIT / \033[32m{$cmd->hits}\033[0m" );
     }
   }
 
