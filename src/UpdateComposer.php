@@ -89,7 +89,7 @@ class UpdateComposer
     if( $result_code !== 0 ){
       exit( $result_code );
     } else {
-      $this->write( "\rGIT :: \033[32m{$cmd->hits}\033[0m" );
+      $this->write( "\rGIT / \033[32m{$cmd->hits}\033[0m" );
     }
   }
 
@@ -100,28 +100,14 @@ class UpdateComposer
     $this->write( "\n\033[1mPackage Version Manager\033[0m\n" );
     $this->write( "\n\033[36mPackage name {$package->name()} \033[0m\033[1mv{$package->version()}\033[0m\n\n\033[?25l" );
 
-    foreach([
-      new CMDStructure( 
-        "git add .", "add files"
-      ),
-      new CMDStructure( 
-        "git commit -m \"Release {$package->version()}\"",
-        "create commit"
-      ),
-      new CMDStructure(
-        "git tag {$package->version()}",
-        "create tag"
-      ),
-      new CMDStructure(
-        "git push origin HEAD",
-        "send to origin"
-      ),
-      new CMDStructure(
-        "git push origin {$package->version()}",
-        "send to origin tag"
-      )
-    ] as $cmdStructure ){
-      $this->shellExec( $cmdStructure );
+    foreach([ 
+      new CMDStructure( "git add .", "stage all changes" ),
+      new CMDStructure( "git commit -m \"Release {$package->version()}\"", "create release commit" ),
+      new CMDStructure( "git tag {$package->version()}", "create release tag" ),
+      new CMDStructure( "git push origin HEAD", "push commit to origin" ),
+      new CMDStructure( "git push origin {$package->version()}", "push release tag to origin" )
+    ] as $structure ){
+      $this->shellExec( $structure );
     }
 
     $this->write( "\r\n\033[?25h\033[36mPublish finish v{$package->version()}\033[0m\n" );
