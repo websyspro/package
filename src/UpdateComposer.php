@@ -2,169 +2,126 @@
 
 namespace Websyspro\Package;
 
-use function count;
+use Websyspro\Package\Interfaces\CMDStructure;
+use Websyspro\Package\Interfaces\PackageStructure;
+use function sprintf;
 
 class UpdateComposer
 {
   private string $composerFile;
-  private array $composerJson;
-  private string $currentVersion;
-  private string $newVersion;
-  private Terminal $terminal;
+  private array $composerStructure;
 
   public function __construct(
     public string $directory
   ){
-    $this->terminal = Terminal::init();
-    $this->composerFile = rtrim( $directory, "/\\" ) . "/composer.json";
-    
-    $this->terminal
-      ->eof()
-      ->bold("Package Version Manager")
-      ->eof();
-    
-    $this->load();
-    $this->incrementPatch();
-    $this->save();
-    $this->gitRelease();
+    $this->composerFile();
+    $this->composerLoader();
+    $this->composerSaveVersion();
+    $this->composerSendVersion();
+
+
+
+    // $this->save();
+    // $this->gitRelease();
+  }
+
+  private function write(
+    string $data
+  ): void {
+    fwrite( STDOUT, $data );
+  }
+
+  private function extractVersion(
+  ): PackageStructure {
+    return new PackageStructure(
+      ...[
+        $this->composerStructure[ ConstsComposer::name ],
+        $this->composerStructure[ ConstsComposer::description ],
+        ...explode( 
+          ConstsComposer::versionSeparator, $this->composerStructure[
+            ConstsComposer::version 
+          ] ?? ConstsComposer::versionDefault
+        )
+      ]
+    );
   }
 
   private function composerFile(
-  ): string {
-    return sprintf(
+  ): void {
+    $this->composerFile = sprintf(
       "%s/%s", rtrim(
         $this->directory, "/\\"
       ), "composer.json"
     );
   }
 
-  private function load(
+  private function composerLoader(
   ): void {
-    if (file_exists($this->composerFile()) === false) {
-      $this->terminal->error("composer.json não encontrado em: {$this->composerFile()}");
-      exit(1);
+    if( file_exists( $this->composerFile) === false ){
+      $this->write( "\033[31mComposer file not found\033[0m" );
+    } else {
+      $this->composerStructure = json_decode(
+        file_get_contents( $this->composerFile ), true
+      );
     }
-
-    $this->composerJson = json_decode(
-      file_get_contents( $this->composerFile ), true
-    );
-
-    $this->currentVersion = $this->composerJson[ "version" ] ?? "1.0.0";
   }
 
-  private function incrementPatch(
+  private function composerSaveVersion(
   ): void {
-    $parts = explode(
-      ".", $this->currentVersion
-    );
+    $this->composerStructure[
+      ConstsComposer::version
+    ] = $this->extractVersion()->inc();
 
-    while(count( $parts ) < 3){
-      $parts[] = "0";
-    }
-
-    $parts[2] = (int)$parts[2] + 1;
-
-    $this->newVersion = implode(
-      ".", $parts
-    );
-    
-    $this->composerJson["version"] = $this->newVersion;
-  }
-
-  private function save(
-  ): void {
-    // $this->terminal->dim("→ Salvando composer.json...")->eof();
-    
-    $content = json_encode(
-      $this->composerJson, 
-        JSON_PRETTY_PRINT |
-        JSON_UNESCAPED_SLASHES |
-        JSON_UNESCAPED_UNICODE
+    $content = json_encode( 
+      $this->composerStructure, 
+      JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
     );
 
     $content = str_replace( "    ", "  ", $content );
     file_put_contents( $this->composerFile, $content . PHP_EOL );
-    
-    // $this->terminal->success("Arquivo salvo");
   }
 
-  private function run(
-    string $command,
-    bool $silent = true
+  private function shellExec(
+    CMDStructure $cmd
   ): void {
-    if ($silent) {
-      if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        $command .= " >nul 2>&1";
-      } else {
-        $command .= " >/dev/null 2>&1";
-      }
-    }
-    
-    exec($command, $output, $exitCode);
+    exec(
+      strtoupper( substr( PHP_OS, 0, 3 )) === "WIN"
+        ? "{$cmd->script} >nul 2>&1" 
+        : "{$cmd->script} >/dev/null 2>&1", 
+      $output, $result_code
+    );
 
-    if ($exitCode !== 0) {
-      $this->terminal->error("Comando falhou com código {$exitCode}");
-      $this->terminal->dim("  $ {$command}")->eof();
-      exit($exitCode);
+    if( $result_code !== 0 ){
+      exit( $result_code );
+    } else {
+      $this->write( "\r\033[32m{$cmd->hits}\033[0m" );
     }
   }
 
-  private function gitRelease(
-    array $commands = []
+  private function composerSendVersion(
   ): void {
-    $version = $this->newVersion;
-    $tag = "v{$version}";
-    $packageName = $this->composerJson["name"] ?? "package";
+    $extractVersion = $this->extractVersion();
 
-    /* define header */
-    $this->terminal
-      ->eof()
-      ->cyan("{$packageName} ")
-      ->bold( "publish v{$this->newVersion}")
-      ->eof()
-      ->eof()
-      ->cursorHide(); // Esconde cursor
+
+    $packageName = $this->composerJson["name"] 
+      ?? "package";
+
+
+    $this->write( "\n\033[1mPackage Version Manager\033[0m\n" );
+    $this->write( "\n\033[36m{$packageName}\033[0m\033[1m{$extractVersion->get()}\033[0m\n\n\033[?25l" );
 
     /* define commands */
-    $commands = [
-      [ 
-        "command" => "git add .",
-        "context" => "add files"
-      ],
-      [
-        "command" => "git commit -m \"Release {$this->newVersion}\"",
-        "context" => "create commit"
-      ],
-      [ 
-        "command" => "git tag {$this->newVersion}",
-        "context" => "create tag"
-      ],
-      [
-        "command" => "git push origin HEAD",
-        "context" => "send to origin"
-      ],
-      [ 
-        "command" => "git push origin {$this->newVersion}",
-        "context" => "send to origin tag" 
-      ]
-    ];
-
-    foreach( $commands as $key => $command ){
-      $this->run( $command[ "command" ]);
-
-      $this->terminal
-        ->text("\r")
-        ->green( $command[ "context" ]);
+    foreach([
+      new CMDStructure( "git add .", "add files" ),
+      new CMDStructure( "git commit -m \"Release {$this->newVersion}\"", "create commit" ),
+      new CMDStructure( "git tag {$this->newVersion}", "create tag" ),
+      new CMDStructure( "git push origin HEAD", "send to origin" ),
+      new CMDStructure( "git push origin {$this->newVersion}", "send to origin tag" )
+    ] as $cmdStructure ){
+      $this->shellExec( $cmdStructure );
     }
-    
-    $this->terminal
-      ->eof() // Quebra linha no final
-      ->cursorShow();
 
-    $this->terminal
-      ->eof()
-      ->cyan("Publish finish {$tag} ")
-      ->eof();
+    $this->write( "\n\033[?25h\033[36mPublish finish {$this->newVersion}\033[0m\n" );
   }
 
   public function getVersion(
