@@ -124,6 +124,6 @@ class UpdateComposer
       $this->shellExec( $cmdStructure );
     }
 
-    $this->write( "\n\033[?25h\033[36mPublish finish v{$package->version()}\033[0m\n" );
+    $this->write( "\r\n\033[?25h\033[36mPublish finish v{$package->version()}\033[0m\n" );
   }
 }
