@@ -99,7 +99,7 @@ class UpdateComposer
 
     $this->write( "\n\033[1mPackage Version Manager\033[0m\n" );
     $this->write( "\n\033[2mPackage name: \033[0m{$package->name()} \033[1mv{$package->version()}\033[0m" );
-    $this->write( "\n\033[2mPackage description: {$package->description()} \033[0m\n\n\033[?25l" );
+    $this->write( "\n\033[2mPackage description: \033[0m{$package->description()}\n\n\033[?25l" );
 
     foreach([ 
       new CMDStructure( "git add .", "stage all changes" ),
