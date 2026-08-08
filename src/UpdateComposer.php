@@ -98,7 +98,7 @@ class UpdateComposer
     $package = $this->package();
 
     $this->write( "\n\033[1mPackage Version Manager\033[0m\n" );
-    $this->write( "\n\033[36m{$package->name()}\033[0m\033[1m{$package->version()}\033[0m\n\n\033[?25l" );
+    $this->write( "\n\033[36m{$package->name()}\s\033[0m\033[1m{$package->version()}\033[0m\n\n\033[?25l" );
 
     foreach([
       new CMDStructure( 
