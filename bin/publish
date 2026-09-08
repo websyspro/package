@@ -5,12 +5,12 @@
  * Update Version Composer
  */
 
-defined( "DIR_BASE" ) || define(
-  "DIR_BASE", realpath( 
+defined( "DevTools_Base_Dir" ) || define(
+  "DevTools_Base_Dir", realpath( 
     __DIR__ . "/../../../../"
   ) . DIRECTORY_SEPARATOR
 );
 
-require DIR_BASE . "vendor/autoload.php";
+require DevTools_Base_Dir . "vendor/autoload.php";
 use Websyspro\Package\UpdateComposer;
-new UpdateComposer( DIR_BASE );
+new UpdateComposer( DevTools_Base_Dir );
